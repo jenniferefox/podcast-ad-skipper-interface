@@ -1,48 +1,70 @@
 import streamlit as st
 
+st.markdown("""
+    <style>
+    .stAudio {
+        margin: 20px 0;
+    }
+    #Podcast Ad Skipper {
+        text-align: center
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 '''
-# TaxiFareModel front
+# Podcast Ad Skipper
 '''
 
 st.markdown('''
-Remember that there are several ways to output content into your web page...
-
-Either as with the title by just creating a string (or an f-string). Or as with this paragraph using the `st.` functions
+## Pick a podcast to play
 ''')
 
-'''
-## Here we would like to add some controllers in order to ask the user to select the parameters of the ride
+col1, col2, col3 = st.columns(3)
 
-1. Let's ask for:
-- date and time
-- pickup longitude
-- pickup latitude
-- dropoff longitude
-- dropoff latitude
-- passenger count
-'''
+with col1:
+    st.image("images/NSTAAF.png", caption="No Such Thing As a Fish", width=200)
+    st.button("Pick Fish")
+with col2:
+    st.image("images/vergecast.jpg", caption="The Vergecast", width=200)
+    st.button("Pick Verge")
+with col3:
+    st.image("images/parentinghell.jpeg", caption="Parenting Hell", width=200)
+    st.button("Pick Parenting")
 
-'''
-## Once we have these, let's call our API in order to retrieve a prediction
 
-See ? No need to load a `model.joblib` file in this app, we do not even need to know anything about Data Science in order to retrieve a prediction...
+# Sample audio URL - replace with your actual audio file
+audio_url_before_ads = "https://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/https/vpid/p0bw7py0.mp3"
 
-🤔 How could we call our API ? Off course... The `requests` package 💡
-'''
+# Display audio player
+st.audio(audio_url_before_ads)
 
-url = 'https://taxifare.lewagon.ai/predict'
+# Create a button that will trigger the API call
+st.button("Remove the ads!")
 
-if url == 'https://taxifare.lewagon.ai/predict':
+# Sample audio URL - replace with your actual audio file
+audio_url_after_ads = "https://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/https/vpid/p0bw7py0.mp3"
 
-    st.markdown('Maybe you want to use your own API for the prediction, not the one provided by Le Wagon...')
+# Display audio player
+st.audio(audio_url_after_ads)
 
-'''
+# if st.button("Make API Call"):
+    # try:
+        # Replace with your actual API endpoint
+        # api_url = ""
 
-2. Let's build a dictionary containing the parameters for our API...
+        # Make the API call
+        # response = requests.get(api_url)
 
-3. Let's call our API using the `requests` package...
+        # Check if the request was successful
+        # if response.status_code == 200:
+        #     # Parse the JSON response
+        #     data = response.json()
 
-4. Let's retrieve the prediction from the **JSON** returned by the API...
+        #     # Display the API response
+        #     st.success("API call successful!")
+        #     st.json(data)
+        # else:
+        #     st.error(f"API call failed with status code: {response.status_code}")
 
-## Finally, we can display the prediction to the user
-'''
+    # except Exception as e:
+    #     st.error(f"An error occurred: {str(e)}")
