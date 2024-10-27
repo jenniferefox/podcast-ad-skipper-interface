@@ -5,7 +5,6 @@ import sys
 
 
 
-
 st.markdown("""
     <style>
     .stAudio {
@@ -62,8 +61,6 @@ if st.button("Remove the ads!"):
 
         # Convert the spectrogram to a numpy array and pass it to the model
         spectrogram_np = np.expand_dims(reshaped_spectrogram, axis=0)  # Add batch dimension
-        prediction = model.predict(spectrogram_np) # Use the model to predict
-
 
         try:
             # To update URL and save eit as an env variable
