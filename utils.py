@@ -11,7 +11,6 @@ from scipy.ndimage import zoom
 from keras.applications import VGG16
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-import cv2 as cv
 from keras import layers, models, Model
 from keras.optimizers import Adam
 import tensorflow as tf
