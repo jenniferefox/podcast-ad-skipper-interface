@@ -65,7 +65,6 @@ if st.button("Remove the ads!"):
         try:
             # To update URL and save eit as an env variable
             api_url = "http://localhost:8000/predict"
-            response = requests.post(api_url, json={"spectrogram": spectrogram.tolist()})
 
             params={"spectrogram":spectrogram_np}
 
