@@ -20,9 +20,11 @@ install_requirements:
 #         HEROKU COMMANDS
 # ----------------------------------
 
+streamlit_leo:
+	-@streamlit run app_leo.py
+
 streamlit:
 	-@streamlit run app.py
-
 
 # ----------------------------------
 #    LOCAL INSTALL COMMANDS
