@@ -1,0 +1,37 @@
+#audio/image manipulation
+scipy
+librosa
+pydub
+termcolor
+requests
+
+# Some example packages
+pandas
+numpy
+seaborn
+
+# Testing packages
+pytest
+
+# gcp
+google-cloud-storage
+google-auth
+google-cloud-bigquery
+
+# jupyter
+notebook==7.0.5
+notebook_shim==0.2.3
+
+# BigQuery
+pyarrow
+
+#Model
+keras
+tensorflow
+
+#API
+fastapi
+uvicorn
+
+# Streamlit
+Streamlit
