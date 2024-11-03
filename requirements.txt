@@ -25,13 +25,14 @@ notebook_shim==0.2.3
 # BigQuery
 pyarrow
 
-#Model
-keras
-tensorflow
+# #Model
+# keras
+# tensorflow
 
 #API
 fastapi
 uvicorn
+
 
 # Streamlit
 Streamlit

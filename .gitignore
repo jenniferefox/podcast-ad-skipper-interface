@@ -162,7 +162,9 @@ cython_debug/
 #.idea/
 
 
-
-model_folder/
-images/
-downloaded_podcasts/
+.raw_data
+.envrc
+.env
+.
+ad_detection_model.h5
+.python-version
