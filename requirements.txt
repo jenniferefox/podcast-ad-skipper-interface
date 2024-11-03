@@ -33,5 +33,6 @@ pyarrow
 fastapi
 uvicorn
 
-#front end
-streamlit
+
+# Streamlit
+Streamlit
