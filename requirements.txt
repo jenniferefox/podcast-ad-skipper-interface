@@ -26,8 +26,8 @@ notebook_shim==0.2.3
 pyarrow
 
 # #Model
-# keras
-# tensorflow
+keras
+tensorflow
 
 #API
 fastapi
@@ -35,4 +35,4 @@ uvicorn
 
 
 # Streamlit
-Streamlit
+streamlit
