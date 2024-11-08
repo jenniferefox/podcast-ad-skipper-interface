@@ -168,3 +168,4 @@ cython_debug/
 .
 ad_detection_model.h5
 .python-version
+model.h5

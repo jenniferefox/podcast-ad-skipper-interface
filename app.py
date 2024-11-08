@@ -1,90 +1,116 @@
+# Libraries:
 import streamlit as st
-from utils.utils import get_features_model, split_files
-import os
+import numpy as np
+import librosa
+import soundfile as sf
+from keras import models
+from pydub import AudioSegment
+import tempfile
 
-st.markdown("""
+# Import your ad detection and removal functions here
+from utils.utils import create_spectrogram, detect_ads, remove_ads_from_podcast
+
+# Load the model:
+model = models.load_model('model.h5')
+
+# Function to add background style
+def add_bg_from_url():
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background-image: url("");
+             background-size: cover;
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
+
+add_bg_from_url()
+
+# Function to style buttons with CSS
+def style_buttons():
+    st.markdown("""
     <style>
-    .stAudio {
-        margin: 20px 0;
+    .stButton > button {
+        color: black;
+        background-color: grey;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 16px;
     }
-    #Podcast Ad Skipper {
-        text-align: center
+    .stButton > button:hover {
+        background-color: black;
+        color: white;
     }
     </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-'''
-# Podcast Ad Skipper
-'''
+style_buttons()
 
-st.markdown('''
-## Pick a podcast to play
-''')
+# Main App layout with Sidebar
+st.sidebar.title("Podcast Ad Skipper")
+st.sidebar.write("An easy way to skip ads in your podcasts!")
+st.sidebar.write("Upload a podcast and choose to play the original version, skip the ads, or listen to only the ads.")
 
-col1, col2, col3 = st.columns(3)
+# Upload audio file
+st.sidebar.subheader("Upload Your Podcast")
+podcast_file = st.sidebar.file_uploader("Choose a podcast file", type=["mp3", "wav"])
 
-with col1:
-    st.image("images/NSTAAF.png", caption="No Such Thing As a Fish", width=200)
-    if st.button("Pick Halloween"):
-        info = [os.path.join('.raw_data/', "spirithalloween.mp3"), [0,30, ((22*60)+51), ((23*60)+53),((33*60)+49), ((34*60)+50)], "spirit_halloween"]
-        split_files(info[0], info[1], info[2], info[3])
-        for file in get_features_model()
-
-# with col2:
-#     st.image("images/vergecast.jpg", caption="The Vergecast", width=200)
-#     if st.button("Pick World"):
-
-# with col3:
-#     st.image("images/parentinghell.jpeg", caption="Parenting Hell", width=200)
-#     if st.button("Pick Parenting"):
+# Display the main header
+st.title("🎧 Podcast Ad Skipper")
+st.markdown("Play the original podcast, the podcast without ads, or listen to ads only.")
 
 
+if podcast_file is not None:
+    # Save the uploaded file to a temporary location
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3" if podcast_file.name.endswith(".mp3") else ".wav") as tmp_file:
+        tmp_file.write(podcast_file.read())
+        tmp_file_path = tmp_file.name
 
-# Sample audio URL - replace with your actual audio file
-audio_url_before_ads = "https://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/https/vpid/p0bw7py0.mp3"
+    # Load the audio file with AudioSegment
+    file_format = tmp_file_path.split('.')[-1]  # Get the file extension (either 'mp3' or 'wav')
+    audio_file_before_ads = AudioSegment.from_file(tmp_file_path, format=file_format)
 
-# Display audio player
-st.audio(audio_url_before_ads)
+    # Play original podcast
+    if st.button("▶️ Play Original Podcast"):
+        st.audio(podcast_file, format='audio/wav')
 
-# Create a button that will trigger the API call
-st.button("Remove the ads!")
+    # Run ad detection and removal
+    if st.button("🚫 Detect and Remove Ads"):
+        st.info("Processing... Please wait.")
 
-#prep local vs cloud options!
+        # Initialize progress bar
+        progress_bar = st.progress(0)
 
-    #split into 5 sec clips
-    #transform for predict input
-    #run through model.predict
-    #output list of where ads are
+        # Step 1: Detect ads
+        progress_bar.progress(25)
+        # Run detect_ads and remove_ads_from_podcast functions
+        ad_segments = detect_ads(tmp_file_path, model, clip_duration=5) # Detect ads using the model
 
+        # Step 2: Remove ads from podcast
+        progress_bar.progress(50)
+        podcast_without_ads, ads_only = remove_ads_from_podcast(tmp_file_path, ad_segments)
 
+        # Save to files for playback
+        clean_podcast_path = "clean_podcast.mp3"
+        ads_only_path = "ads_only.mp3"
+        progress_bar.progress(75)
+        podcast_without_ads.export(clean_podcast_path, format="mp3")
+        ads_only.export(ads_only_path, format="mp3")
 
-# Sample audio URL - replace with your actual audio file
-audio_url_after_ads = "https://open.live.bbc.co.uk/mediaselector/6/redir/version/2.0/mediaset/audio-nondrm-download/proto/https/vpid/p0bw7py0.mp3"
+         # Final step: Completion
+        progress_bar.progress(100)
+        st.success("Ad detection and removal complete!")
 
-# Display audio player
-st.audio(audio_url_after_ads)
+ # Display two options for playing the processed podcasts
 
+    if st.button("🎶 Play Podcast Without Ads"):
+        clean_podcast_path = "clean_podcast.mp3"
+        st.audio(clean_podcast_path, format="mp3")
 
-
-
-# if st.button("Make API Call"):
-    # try:
-        # Replace with your actual API endpoint
-        # api_url = ""
-
-        # Make the API call
-        # response = requests.get(api_url)
-
-        # Check if the request was successful
-        # if response.status_code == 200:
-        #     # Parse the JSON response
-        #     data = response.json()
-
-        #     # Display the API response
-        #     st.success("API call successful!")
-        #     st.json(data)
-        # else:
-        #     st.error(f"API call failed with status code: {response.status_code}")
-
-    # except Exception as e:
-    #     st.error(f"An error occurred: {str(e)}")
+    if st.button("🔊 Play Ads Only"):
+        ads_only_path = "ads_only.mp3"
+        st.audio(ads_only_path, format='mp3')
